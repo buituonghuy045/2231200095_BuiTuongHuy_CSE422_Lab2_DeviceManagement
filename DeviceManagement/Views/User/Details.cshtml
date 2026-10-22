@@ -1,0 +1,119 @@
+@model DeviceManagement.Models.UserModel
+@{
+    ViewData["Title"] = "User Details";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card-modern p-4 mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="fw-bold text-dark mb-0">User Details</h4>
+                <div class="d-flex gap-2">
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-primary px-3">
+                        Edit
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-sm btn-danger px-3">
+                        Delete
+                    </a>
+                </div>
+            </div>
+
+            <div class="row g-3 py-2 border-top">
+                <div class="col-sm-4">
+                    <span class="text-muted small fw-semibold text-uppercase">Full Name</span>
+                    <div class="fw-bold text-dark mt-1">@Model.FullName</div>
+                </div>
+                <div class="col-sm-4">
+                    <span class="text-muted small fw-semibold text-uppercase">Email</span>
+                    <div class="text-dark mt-1">@Model.Email</div>
+                </div>
+                <div class="col-sm-4">
+                    <span class="text-muted small fw-semibold text-uppercase">Phone Number</span>
+                    <div class="text-dark mt-1">@Model.PhoneNumber</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-modern overflow-hidden mb-4">
+            <div class="p-3 px-4 border-bottom bg-white d-flex justify-content-between align-items-center">
+                <h6 class="fw-bold text-dark mb-0">Assigned Devices (@Model.Devices.Count)</h6>
+                <a asp-controller="Device" asp-action="Create" class="btn btn-sm btn-outline-primary">
+                    Assign Device
+                </a>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-modern align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>Code</th>
+                            <th>Device Name</th>
+                            <th>Category</th>
+                            <th>Status</th>
+                            <th>Date of Entry</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Devices.Any())
+                        {
+                            @foreach (var device in Model.Devices)
+                            {
+                                <tr>
+                                    <td><span class="code-pill">@device.Code</span></td>
+                                    <td class="fw-bold text-dark">@device.Name</td>
+                                    <td>
+                                        <span class="badge rounded-pill bg-light text-secondary border">
+                                            @(device.Category?.Name ?? "N/A")
+                                        </span>
+                                    </td>
+                                    <td>
+                                        @switch (device.Status)
+                                        {
+                                            case DeviceManagement.Models.DeviceStatus.InUse:
+                                                <span class="status-pill status-in-use">
+                                                    <span class="status-dot"></span> In use
+                                                </span>
+                                                break;
+                                            case DeviceManagement.Models.DeviceStatus.UnderMaintenance:
+                                                <span class="status-pill status-maintenance">
+                                                    <span class="status-dot"></span> Under maintenance
+                                                </span>
+                                                break;
+                                            case DeviceManagement.Models.DeviceStatus.Broken:
+                                                <span class="status-pill status-broken">
+                                                    <span class="status-dot"></span> Broken
+                                                </span>
+                                                break;
+                                        }
+                                    </td>
+                                    <td>
+                                        <span class="text-muted small">@device.DateOfEntry.ToString("yyyy-MM-dd")</span>
+                                    </td>
+                                    <td class="text-end">
+                                        <a asp-controller="Device" asp-action="Details" asp-route-id="@device.Code" 
+                                           class="btn btn-sm bg-white border text-dark px-2 py-1">
+                                            View
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="6" class="text-center py-4 text-muted">No devices assigned to this user.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div>
+            <a asp-action="Index" class="btn btn-secondary-modern">
+                <i class="bi bi-arrow-left me-1"></i> Back to User List
+            </a>
+        </div>
+    </div>
+</div>

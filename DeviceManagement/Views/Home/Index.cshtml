@@ -1,0 +1,104 @@
+@model DeviceManagement.Models.DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold mb-0 text-dark">Dashboard</h2>
+    <a asp-controller="Device" asp-action="Create" class="btn btn-primary">
+        <i class="bi bi-plus-lg me-1"></i> Add Device
+    </a>
+</div>
+
+<div class="card-modern overflow-hidden">
+    <div class="p-3 px-4 border-bottom bg-white d-flex justify-content-between align-items-center">
+        <h5 class="fw-bold text-dark mb-0">Recent Devices</h5>
+        <a asp-controller="Device" asp-action="Index" class="btn btn-sm btn-outline-secondary">
+            View All
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-modern align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>Code</th>
+                    <th>Device Name</th>
+                    <th>Category</th>
+                    <th>Status</th>
+                    <th>Assigned User</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.RecentDevices.Any())
+                {
+                    @foreach (var device in Model.RecentDevices)
+                    {
+                        <tr>
+                            <td><span class="code-pill">@device.Code</span></td>
+                            <td class="fw-bold text-dark">@device.Name</td>
+                            <td>
+                                <span class="badge rounded-pill bg-light text-secondary border">
+                                    @(device.Category?.Name ?? "N/A")
+                                </span>
+                            </td>
+                            <td>
+                                @switch (device.Status)
+                                {
+                                    case DeviceManagement.Models.DeviceStatus.InUse:
+                                        <span class="status-pill status-in-use">
+                                            <span class="status-dot"></span> In use
+                                        </span>
+                                        break;
+                                    case DeviceManagement.Models.DeviceStatus.UnderMaintenance:
+                                        <span class="status-pill status-maintenance">
+                                            <span class="status-dot"></span> Under maintenance
+                                        </span>
+                                        break;
+                                    case DeviceManagement.Models.DeviceStatus.Broken:
+                                        <span class="status-pill status-broken">
+                                            <span class="status-dot"></span> Broken
+                                        </span>
+                                        break;
+                                }
+                            </td>
+                            <td>
+                                @if (device.User != null)
+                                {
+                                    <span class="text-dark small"><i class="bi bi-person me-1"></i>@device.User.FullName</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted small">Unassigned</span>
+                                }
+                            </td>
+                            <td class="text-end">
+                                <div class="d-inline-flex gap-1">
+                                    <a asp-controller="Device" asp-action="Details" asp-route-id="@device.Code" 
+                                       class="btn btn-sm bg-white border text-dark px-2 py-1">
+                                        View
+                                    </a>
+                                    <a asp-controller="Device" asp-action="Edit" asp-route-id="@device.Code" 
+                                       class="btn btn-sm btn-primary px-2 py-1">
+                                        Edit
+                                    </a>
+                                    <a asp-controller="Device" asp-action="Delete" asp-route-id="@device.Code" 
+                                       class="btn btn-sm btn-danger px-2 py-1">
+                                        Delete
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="6" class="text-center py-4 text-muted">No devices found.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

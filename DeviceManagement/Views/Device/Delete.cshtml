@@ -1,0 +1,44 @@
+@model DeviceManagement.Models.DeviceModel
+@{
+    ViewData["Title"] = "Delete Device";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-6 col-md-8">
+        <div class="card-modern p-4 border-top border-danger border-3">
+            <h5 class="fw-bold text-danger mb-3">Delete Device</h5>
+            <p class="text-muted small">Are you sure you want to delete this device?</p>
+
+            <div class="p-3 bg-light rounded-3 my-3">
+                <div class="d-flex justify-content-between py-2 border-bottom">
+                    <span class="text-muted small">Code</span>
+                    <span class="code-pill">@Model.Code</span>
+                </div>
+                <div class="d-flex justify-content-between py-2 border-bottom">
+                    <span class="text-muted small">Name</span>
+                    <span class="fw-bold text-dark">@Model.Name</span>
+                </div>
+                <div class="d-flex justify-content-between py-2 border-bottom">
+                    <span class="text-muted small">Category</span>
+                    <span class="text-dark">@(Model.Category?.Name ?? "N/A")</span>
+                </div>
+                <div class="d-flex justify-content-between py-2">
+                    <span class="text-muted small">Assigned User</span>
+                    <span class="text-dark">@(Model.User?.FullName ?? "Unassigned")</span>
+                </div>
+            </div>
+
+            <form asp-action="Delete" method="post">
+                <input type="hidden" asp-for="Code" />
+                <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                    <a asp-action="Index" class="btn btn-secondary-modern">
+                        Cancel
+                    </a>
+                    <button type="submit" class="btn btn-danger px-4">
+                        Delete
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
